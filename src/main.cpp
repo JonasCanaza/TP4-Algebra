@@ -2,7 +2,6 @@
 #include "raymath.h"
 
 #include <vector>
-#include <array>
 
 struct Plane
 {
@@ -58,45 +57,45 @@ void main()
 
 	InitWindow(800, 600, "Frustum Culling");
 
-	objects[0].model = LoadModel("res/decahedron.obj");
-	objects[0].position = { 5.0f, 0.0f, 0.0f };
-	objects[0].isVisible = true;
-	objects[0].aabb = CalculateLocalAABB(*objects[0].model.meshes);
+	//objects[0].model = LoadModel("res/decahedron.obj");
+	//objects[0].position = { 5.0f, 0.0f, 0.0f };
+	//objects[0].isVisible = true;
+	//objects[0].aabb = CalculateLocalAABB(*objects[0].model.meshes);
 
-	sceneObjects.push_back(objects[0]);
+	//sceneObjects.push_back(objects[0]);
 
-	objects[1].model = LoadModel("res/dodecahedron.obj");
-	objects[1].position = { 3.0f, 2.0f, 0.0f };
-	objects[1].isVisible = true;
-	objects[1].aabb = CalculateLocalAABB(*objects[1].model.meshes);
+	//objects[1].model = LoadModel("res/dodecahedron.obj");
+	//objects[1].position = { 3.0f, 2.0f, 0.0f };
+	//objects[1].isVisible = true;
+	//objects[1].aabb = CalculateLocalAABB(*objects[1].model.meshes);
 
-	sceneObjects.push_back(objects[1]);
+	//sceneObjects.push_back(objects[1]);
 
-	objects[2].model = LoadModel("res/icosahedron.obj");
-	objects[2].position = { 5.0f, 0.0f, 1.0f };
-	objects[2].isVisible = true;
-	objects[2].aabb = CalculateLocalAABB(*objects[2].model.meshes);
+	//objects[2].model = LoadModel("res/icosahedron.obj");
+	//objects[2].position = { 5.0f, 0.0f, 1.0f };
+	//objects[2].isVisible = true;
+	//objects[2].aabb = CalculateLocalAABB(*objects[2].model.meshes);
 
-	sceneObjects.push_back(objects[2]);
+	//sceneObjects.push_back(objects[2]);
 
-	objects[3].model = LoadModel("res/octahedron.obj");
-	objects[3].position = { 0.0f, 5.0f, 0.0f };
-	objects[3].isVisible = true;
-	objects[3].aabb = CalculateLocalAABB(*objects[3].model.meshes);
+	//objects[3].model = LoadModel("res/octahedron.obj");
+	//objects[3].position = { 0.0f, 5.0f, 0.0f };
+	//objects[3].isVisible = true;
+	//objects[3].aabb = CalculateLocalAABB(*objects[3].model.meshes);
 
-	objects[4].model = LoadModel("res/tetrahedron.obj");
-	objects[4].position = { 0.0f, 0.0f, 0.0f };
-	objects[4].isVisible = true;
-	objects[4].aabb = CalculateLocalAABB(*objects[4].model.meshes);
+	//objects[4].model = LoadModel("res/tetrahedron.obj");
+	//objects[4].position = { 0.0f, 0.0f, 0.0f };
+	//objects[4].isVisible = true;
+	//objects[4].aabb = CalculateLocalAABB(*objects[4].model.meshes);
 
-	//for (int i = 0; i < 50; i++)
-	//{
-	//	objects[i].model = LoadModel("res/tetrahedron.obj");
-	//	objects[i].position = { (float)(rand() % 100 - 50), 0.0f, (float)(rand() % 100 - 50)  };
-	//	objects[i].isVisible = true;
-	//	objects[i].aabb = CalculateLocalAABB(*objects[i].model.meshes);
-	//	sceneObjects.push_back(objects[i]);
-	//}
+	for (int i = 0; i < 50; i++)
+	{
+		objects[i].model = LoadModel("res/tetrahedron.obj");
+		objects[i].position = { (float)(rand() % 100 - 50), 0.0f, (float)(rand() % 100 - 50)  };
+		objects[i].isVisible = true;
+		objects[i].aabb = CalculateLocalAABB(*objects[i].model.meshes);
+		sceneObjects.push_back(objects[i]);
+	}
 
 	sceneObjects.push_back(objects[4]);
 
@@ -121,6 +120,15 @@ void main()
 			MyAABB worldAABB = GetUpdatedAABB(sceneObjects[i].aabb, transform);
 
 			sceneObjects[i].isVisible = IsAABBInFrustum(cameraFrustum, worldAABB);
+		}
+
+		if (IsKeyPressed(KEY_P))
+		{
+			camera.fovy += 5.0f;
+		}
+		if (IsKeyPressed(KEY_L))
+		{
+			camera.fovy -= 5.0f;
 		}
 
 		BeginDrawing();
@@ -155,44 +163,6 @@ void main()
 			if (sceneObjects[i].isVisible) visibleCount++;
 		}
 		DrawText(TextFormat("Visible objects: %d/%d", visibleCount, sceneObjects.size()), 10, 10, 20, BLACK);
-		std::array<Vector4, 8> ndcCorners = {
-		Vector4{ -1.0f, -1.0f, -1.0f, 1.0f }, // Near-Bottom-Left
-		Vector4{  1.0f, -1.0f, -1.0f, 1.0f }, // Near-Bottom-Right
-		Vector4{  1.0f,  1.0f, -1.0f, 1.0f }, // Near-Top-Right
-		Vector4{ -1.0f,  1.0f, -1.0f, 1.0f }, // Near-Top-Left
-		Vector4{ -1.0f, -1.0f,  1.0f, 1.0f }, // Far-Bottom-Left
-		Vector4{  1.0f, -1.0f,  1.0f, 1.0f }, // Far-Bottom-Right
-		Vector4{  1.0f,  1.0f,  1.0f, 1.0f }, // Far-Top-Right
-		Vector4{ -1.0f,  1.0f,  1.0f, 1.0f }  // Far-Top-Left
-		};
-
-		// Matrix to convert from NDC to World Space
-		Matrix invViewProj = MatrixInvert(viewProjection);
-
-		std::array<Vector3, 8> worldCorners;
-
-		// Transform NDC corners to World Space
-
-
-		Color frustumColor = GREEN;
-
-		// Near plane
-		DrawLine3D(worldCorners[0], worldCorners[1], frustumColor);
-		DrawLine3D(worldCorners[1], worldCorners[2], frustumColor);
-		DrawLine3D(worldCorners[2], worldCorners[3], frustumColor);
-		DrawLine3D(worldCorners[3], worldCorners[0], frustumColor);
-
-		// Far plane
-		DrawLine3D(worldCorners[4], worldCorners[5], frustumColor);
-		DrawLine3D(worldCorners[5], worldCorners[6], frustumColor);
-		DrawLine3D(worldCorners[6], worldCorners[7], frustumColor);
-		DrawLine3D(worldCorners[7], worldCorners[4], frustumColor);
-
-		// Connecting edges
-		DrawLine3D(worldCorners[0], worldCorners[4], frustumColor);
-		DrawLine3D(worldCorners[1], worldCorners[5], frustumColor);
-		DrawLine3D(worldCorners[2], worldCorners[6], frustumColor);
-		DrawLine3D(worldCorners[3], worldCorners[7], frustumColor);
 
 		EndDrawing();
 	}

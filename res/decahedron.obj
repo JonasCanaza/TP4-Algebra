@@ -1,68 +1,44 @@
-# This file uses centimeters as units for non-parametric coordinates.
+That's a fantastic question, and it's a very clever part of the algorithm!
 
-# mtllib decahedron.mtl
-g default
-v 0.309017 1.000000 -0.951057
-v -0.809017 1.000000 -0.587785
-v -0.809017 1.000000 0.587785
-v 0.309017 1.000000 0.951057
-v 1.000000 1.000000 0.000000
-v 0.000000 2.000000 0.000000
-v 0.000000 -0.000000 -0.000000
-vt 0.239051 0.471591
-vt 0.333885 0.444908
-vt 0.447700 0.474474
-vt 0.553591 0.464093
-vt 0.661836 0.459699
-vt 0.760478 0.473201
-vt 0.500000 1.000000
-vt 0.250013 0.500015
-vt 0.349997 0.499989
-vt 0.500000 1.000000
-vt 0.449999 0.499989
-vt 0.550001 0.499989
-vt 0.650003 0.499989
-vt 0.749987 0.500015
-vn -0.240241 0.628960 -0.739387
-vn -0.240241 0.628960 -0.739387
-vn -0.240241 0.628960 -0.739387
-vn -0.777437 0.628960 0.000000
-vn -0.777437 0.628960 0.000000
-vn -0.777438 0.628960 0.000000
-vn -0.240241 0.628960 0.739387
-vn -0.240241 0.628960 0.739387
-vn -0.240241 0.628960 0.739387
-vn 0.628960 0.628960 0.456966
-vn 0.628960 0.628960 0.456966
-vn 0.628960 0.628960 0.456966
-vn 0.628960 0.628960 -0.456966
-vn 0.628960 0.628960 -0.456966
-vn 0.628960 0.628960 -0.456966
-vn -0.240241 -0.628960 0.739387
-vn -0.240241 -0.628960 0.739387
-vn -0.240241 -0.628960 0.739387
-vn -0.777438 -0.628960 0.000000
-vn -0.777438 -0.628960 0.000000
-vn -0.777438 -0.628960 0.000000
-vn -0.240241 -0.628960 -0.739387
-vn -0.240241 -0.628960 -0.739387
-vn -0.240241 -0.628960 -0.739387
-vn 0.628960 -0.628960 -0.456966
-vn 0.628960 -0.628960 -0.456966
-vn 0.628960 -0.628960 -0.456966
-vn 0.628960 -0.628960 0.456966
-vn 0.628960 -0.628960 0.456966
-vn 0.628960 -0.628960 0.456966
-s off
-g decahedron
-usemtl initialShadingGroup
-f 1/1/1 2/2/2 6/7/3
-f 2/2/4 3/3/5 6/7/6
-f 3/3/7 4/4/8 6/7/9
-f 4/4/10 5/5/11 6/7/12
-f 5/5/13 1/6/14 6/7/15
-f 4/8/16 3/9/17 7/10/18
-f 3/9/19 2/11/20 7/10/21
-f 2/11/22 1/12/23 7/10/24
-f 1/12/25 5/13/26 7/10/27
-f 5/13/28 4/14/29 7/10/30
+The positiveVertex is not always the min value. It only starts as aabb.min.
+
+Think of it as building the correct corner piece by piece. The goal is to find the one corner of the box that is the furthest in the direction the plane is facing.
+
+Here’s the breakdown:
+
+We start with a guess: Vector3 positiveVertex = aabb.min; This sets our starting point as the "bottom-back-left" corner of the box.
+
+We check the X-axis: if (plane.normal.x >= 0) This asks: "Does the plane's 'outside' direction point to the positive X side (to the right)?"
+
+If YES: The furthest point in that direction can't be min.x, it must be max.x. So, we update our corner: positiveVertex.x = aabb.max.x;
+
+If NO: The plane points to the left. The furthest point is already the one we started with, min.x, so we do nothing.
+
+We check the Y-axis: if (plane.normal.y >= 0) This asks: "Does the plane's 'outside' direction point to the positive Y side (up)?"
+
+If YES: The furthest point "up" must be max.y. So, we update our corner: positiveVertex.y = aabb.max.y;
+
+If NO: The plane points down. The furthest point is already min.y, so we do nothing.
+
+We check the Z-axis: if (plane.normal.z >= 0) This is the same logic for the "forward" direction.
+
+Example
+Imagine a plane whose normal is pointing (1, 1, -1). This means it's facing "up," "right," and "backward."
+
+We start with positiveVertex = (min.x, min.y, min.z).
+
+plane.normal.x (1) is >= 0: positiveVertex.x becomes max.x.
+
+positiveVertex is now (max.x, min.y, min.z).
+
+plane.normal.y (1) is >= 0: positiveVertex.y becomes max.y.
+
+positiveVertex is now (max.x, max.y, min.z).
+
+plane.normal.z (-1) is NOT >= 0: positiveVertex.z stays min.z.
+
+positiveVertex is still (max.x, max.y, min.z).
+
+The final positiveVertex we test is (max.x, max.y, min.z), which is the "top-right-back" corner. This is the single corner that is furthest in the (1, 1, -1) direction.
+
+The Test: If even this "best" corner is on the wrong side of the plane, we know the entire box must also be on the wrong side, and we can cull it.
