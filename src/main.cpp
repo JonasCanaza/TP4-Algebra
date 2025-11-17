@@ -57,45 +57,47 @@ void main()
 
 	InitWindow(800, 600, "Frustum Culling");
 
-	//objects[0].model = LoadModel("res/decahedron.obj");
-	//objects[0].position = { 5.0f, 0.0f, 0.0f };
-	//objects[0].isVisible = true;
-	//objects[0].aabb = CalculateLocalAABB(*objects[0].model.meshes);
+	objects[0].model = LoadModel("res/decahedron.obj");
+	objects[0].position = { 5.0f, 5.0f, 5.0f };
+	objects[0].isVisible = true;
+	objects[0].aabb = CalculateLocalAABB(*objects[0].model.meshes);
 
-	//sceneObjects.push_back(objects[0]);
+	sceneObjects.push_back(objects[0]);
 
-	//objects[1].model = LoadModel("res/dodecahedron.obj");
-	//objects[1].position = { 3.0f, 2.0f, 0.0f };
-	//objects[1].isVisible = true;
-	//objects[1].aabb = CalculateLocalAABB(*objects[1].model.meshes);
+	objects[1].model = LoadModel("res/dodecahedron.obj");
+	objects[1].position = { 3.0f, 2.0f, 0.0f };
+	objects[1].isVisible = true;
+	objects[1].aabb = CalculateLocalAABB(*objects[1].model.meshes);
 
-	//sceneObjects.push_back(objects[1]);
+	sceneObjects.push_back(objects[1]);
 
-	//objects[2].model = LoadModel("res/icosahedron.obj");
-	//objects[2].position = { 5.0f, 0.0f, 1.0f };
-	//objects[2].isVisible = true;
-	//objects[2].aabb = CalculateLocalAABB(*objects[2].model.meshes);
+	objects[2].model = LoadModel("res/icosahedron.obj");
+	objects[2].position = { 5.0f, 0.0f, 1.0f };
+	objects[2].isVisible = true;
+	objects[2].aabb = CalculateLocalAABB(*objects[2].model.meshes);
 
-	//sceneObjects.push_back(objects[2]);
+	sceneObjects.push_back(objects[2]);
 
-	//objects[3].model = LoadModel("res/octahedron.obj");
-	//objects[3].position = { 0.0f, 5.0f, 0.0f };
-	//objects[3].isVisible = true;
-	//objects[3].aabb = CalculateLocalAABB(*objects[3].model.meshes);
+	objects[3].model = LoadModel("res/octahedron.obj");
+	objects[3].position = { 0.0f, 5.0f, 0.0f };
+	objects[3].isVisible = true;
+	objects[3].aabb = CalculateLocalAABB(*objects[3].model.meshes);
 
-	//objects[4].model = LoadModel("res/tetrahedron.obj");
-	//objects[4].position = { 0.0f, 0.0f, 0.0f };
-	//objects[4].isVisible = true;
-	//objects[4].aabb = CalculateLocalAABB(*objects[4].model.meshes);
+	sceneObjects.push_back(objects[3]);
 
-	for (int i = 0; i < 50; i++)
-	{
-		objects[i].model = LoadModel("res/tetrahedron.obj");
-		objects[i].position = { (float)(rand() % 100 - 50), 0.0f, (float)(rand() % 100 - 50)  };
-		objects[i].isVisible = true;
-		objects[i].aabb = CalculateLocalAABB(*objects[i].model.meshes);
-		sceneObjects.push_back(objects[i]);
-	}
+	objects[4].model = LoadModel("res/tetrahedron.obj");
+	objects[4].position = { 0.0f, 0.0f, 0.0f };
+	objects[4].isVisible = true;
+	objects[4].aabb = CalculateLocalAABB(*objects[4].model.meshes);
+
+	//for (int i = 0; i < 50; i++)
+	//{
+	//	objects[i].model = LoadModel("res/tetrahedron.obj");
+	//	objects[i].position = { (float)(rand() % 100 - 50), 0.0f, (float)(rand() % 100 - 50)  };
+	//	objects[i].isVisible = true;
+	//	objects[i].aabb = CalculateLocalAABB(*objects[i].model.meshes);
+	//	sceneObjects.push_back(objects[i]);
+	//}
 
 	sceneObjects.push_back(objects[4]);
 
